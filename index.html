@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Intercambio Navideño 🎄❄️</title>
+
+<style>
+/* Fondo general con degradado */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ffecd2, #fcb69f);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    height: 100vh;
+}
+
+/* Contenedor principal */
+.container {
+    max-width: 500px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    position: relative;
+}
+
+/* Título */
+h1 {
+    text-align: center;
+    color: #b30000;
+    font-size: 2rem;
+}
+
+/* Input */
+input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #c0392b;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+/* Botón */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover {
+    background: #2ecc71;
+}
+
+/* Tarjeta de participantes */
+.participantes {
+    margin-top: 20px;
+    padding: 10px;
+    background: #f7f7f7;
+    border-radius: 10px;
+}
+
+/* Resultados */
+.resultado {
+    margin-top: 20px;
+    background: #fff3cd;
+    color: #856404;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+/* ❄️ Animación de nieve */
+.snowflake {
+    position: fixed;
+    top: -10px;
+    color: white;
+    font-size: 1em;
+    user-select: none;
+    pointer-events: none;
+    animation-name: snow;
+    animation-timing-function: linear;
+}
+
+/* Animación de caída */
+@keyframes snow {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(100vh) rotate(360deg); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Contenedor -->
+<div class="container">
+    <h1>🎁 Intercambio Navideño</h1>
+
+    <input id="nombre" type="text" placeholder="Escribe un nombre y presiona Enter">
+    <button onclick="sortear()">Sortear</button>
+
+    <div class="participantes">
+        <h3>Participantes:</h3>
+        <ul id="lista"></ul>
+    </div>
+
+    <div id="resultado" class="resultado" style="display:none;"></div>
+</div>
+
+<script>
+/* Lista de participantes */
+let participantes = [];
+
+/* Añadir con Enter */
+document.getElementById("nombre").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") agregar();
+});
+
+/* Agregar nombre */
+function agregar() {
+    const nombre = document.getElementById("nombre").value.trim();
+    if (!nombre) return;
+    participantes.push(nombre);
+    actualizarLista();
+    document.getElementById("nombre").value = "";
+}
+
+/* Mostrar lista */
+function actualizarLista() {
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
+    participantes.forEach(n => {
+        const li = document.createElement("li");
+        li.textContent = "🎄 " + n;
+        lista.appendChild(li);
+    });
+}
+
+/* Sorteo */
+function sortear() {
+    if (participantes.length < 2) {
+        alert("Debes agregar al menos dos participantes.");
+        return;
+    }
+
+    let asignados = [...participantes];
+    let valido = false;
+
+    while (!valido) {
+        for (let i = asignados.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [asignados[i], asignados[j]] = [asignados[j], asignados[i]];
+        }
+        valido = participantes.every((p, i) => p !== asignados[i]);
+    }
+
+    let texto = "<h2>Resultados:</h2>";
+    participantes.forEach((p, i) => {
+        texto += `<p><b>${p}</b> → ${asignados[i]}</p>`;
+    });
+
+    const result = document.getElementById("resultado");
+    result.innerHTML = texto;
+    result.style.display = "block";
+}
+
+/* ❄️ Crear nieve animada */
+function crearNieve() {
+    const snow = document.createElement("div");
+    snow.classList.add("snowflake");
+    snow.textContent = "❄";
+
+    // Posición inicial aleatoria
+    snow.style.left = Math.random() * 100 + "vw";
+
+    // Tamaño aleatorio
+    snow.style.fontSize = (Math.random() * 20 + 10) + "px";
+
+    // Duración aleatoria
+    snow.style.animationDuration = (Math.random() * 5 + 5) + "s";
+
+    document.body.appendChild(snow);
+
+    // Eliminar al final
+    setTimeout(() => snow.remove(), 10000);
+}
+
+// Crear copos continuamente
+setInterval(crearNieve, 200);
+</script>
+
+</body>
+</html>
